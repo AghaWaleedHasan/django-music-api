@@ -19,24 +19,28 @@ class WalmartSpiderSpider(scrapy.Spider):
         ending_price = response.xpath("//span[@itemprop='highPrice']/text()").get()
         categories = response.xpath("//span[@itemprop='name']/text()").getall()
         delivery_period = response.xpath("//div[@class='ShippingMessage-container fulfillment-shipping-msg-tile  color-black']/text()").get()
-        original_price = response.xpath("//span[@class='visuallyhidden']/text()").get()
         gift_eligibility =  response.xpath("//span[@class='copy-small font-bold']/text()").get()
-        available_colors = response.xpath("//div[@class='variants__list']/input/@aria-label/text()").getall()
+        available_colors = response.xpath("//div[@class='variants__list']/input/@aria-label").getall()
         picture = response.xpath("//img[@class='hover-zoom-hero-image']/@src").get()
         picture_url = "https:" + picture.split('?')[0]
         product_features = response.xpath("//div[@class='collapsable-about-product-container']/div/section/div/div/div[@class='about-item-collapsable-features xxs-margin-left m-margin-top']/div/div/text()").get()
+        available_sizes = response.xpath("//label[@availabilitystatus='AVAILABLE']/div/div[@class='var__overlay']/@data-label").getall()
+        review_dates = response.xpath("//span[@class='review-date-submissionTime']/text()").getall()
+        review_ratings = response.xpath("//span[@class='visuallyhidden seo-avg-rating']/text()").getall()[1:]
 
         yield { 
             'product title' : product_title,
-            'rating' : float(rating),
-            'number of people who rated' : int(no_of_reviews.split()[0]),
-            'starting price' : starting_price,
-            'ending price' : ending_price,
+            'product link' : response.url,
+            'product rating' : float(rating),
+            'number of ratings' : int(no_of_reviews.split()[0]),
+            'product starting price' : starting_price,
+            'product ending price' : ending_price,
+            'available sizes' : available_sizes,
+            'available colors' : available_colors,
             'categories' : categories,
             'delivery period' : delivery_period,
-            'original price' : original_price,
             'gift eligibility' : gift_eligibility,
-            'available colors' : available_colors,
             'main picture url' : picture_url,
-            'product features' : product_features,
+            'features' : product_features,
+            'reviews' : [(review_date, review_rating) for review_date, review_rating in zip(review_dates, review_ratings)]
         }   
