@@ -36,7 +36,7 @@ class WalmartSpiderSpider(scrapy.Spider):
             'delivery period' : delivery_period,
             'original price' : original_price,
             'gift eligibility' : gift_eligibility,
-            'available colors' : available_colors
-            'main picture url' : picture_url
-            'product features' : product_features
+            'available colors' : available_colors,
+            'main picture url' : picture_url,
+            'product features' : product_features,
         }   
