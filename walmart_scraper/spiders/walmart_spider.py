@@ -5,15 +5,17 @@ class WalmartSpiderSpider(scrapy.Spider):
     name = 'walmart_spider'
     allowed_domains = ['walmart.com']
     start_urls = ['https://walmart.com/ip/IZOD-Men-s-Short-Sleeve-Advantage-Chest-Stripe-Polo/486362422']
-    handle_httpstatus_list = [301]
+    #handle_httpstatus_list = [301]
 
     def parse(self, response):
         request = scrapy.Request(url=self.start_urls[0], callback=self.parse_url)
-        request.meta['proxy'] = "136.226.18.238:443"
+        #request.meta['proxy'] = "136.226.18.238:443"
+        request.meta['redirect_enabled'] = False
         yield request
 
     def parse_url(self, response):
         product_title = response.xpath("//div[@id='product-overview']/div/div[3]/div/h1/text()")
         yield { 
-            'prod title' : product_title
+            'product title' : product_title.get(),
+            #'response body' : response.text
         }
